@@ -1,0 +1,55 @@
+graph TD
+    subgraph "C++ Market Data Service"
+        A[Price Generator] --> B[Market Simulator]
+        B --> C[Order Book Simulator]
+        C --> D[Market Event Generator]
+        D --> E[HTTP/WebSocket API Server]
+
+        F[Static Data] --> A
+        G[Configuration] --> B
+        H[Volatility Models] --> C
+    end
+
+    subgraph "Data Flow"
+        E --> I[REST Endpoints]
+        E --> J[WebSocket Streams]
+
+        I --> K["GET /api/market/prices<br/>GET /api/market/orderbook/{symbol}<br/>GET /api/market/trades"]
+        J --> L["Real-time Price Updates<br/>Order Book Changes<br/>Market Events"]
+    end
+
+    subgraph "Java Trading Platform"
+        M[Market Data Client] --> N[Order Service]
+        N --> O[Order Matching Engine]
+        O --> P[Event Publisher]
+
+        Q[Order Book Service] --> R[WebSocket Notifications]
+        S[User Balance Service] --> T[Portfolio Updates]
+    end
+
+    %% Connections between services
+    K --> M
+    L --> M
+    M --> Q
+
+    O --> U[Trade Execution]
+    U --> V[Balance Updates]
+    V --> S
+
+    P --> W[OrderMatchedEvent]
+    W --> X[Real-time Notifications]
+
+    %% Styling
+    classDef cppService fill:#e1f5fe,stroke:#0277bd,stroke-width:2px
+    classDef javaService fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    classDef dataFlow fill:#e8f5e8,stroke:#2e7d32,stroke-width:2px
+    classDef api fill:#fff3e0,stroke:#ef6c00,stroke-width:2px
+
+    class A,B,C,D,E,F,G,H cppService
+    class M,N,O,P,Q,R,S,T,U,V,W,X javaService
+    class I,J,K,L dataFlow
+
+    %% Labels
+    Y["C++ generates realistic<br/>market data and feeds<br/>Java trading platform"]
+    Y -.-> A
+    Y -.-> M
