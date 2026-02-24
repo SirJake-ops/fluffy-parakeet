@@ -7,7 +7,7 @@
 
 #include "MarkPrice.h"
 
-MarkPrice* MarkPrice::generatePrice(const std::string &symbol) const {
+market::MarkPrice *market::MarkPrice::generatePrice(const std::string &symbol) const {
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_real_distribution<> distribution(-99999, 99999);
