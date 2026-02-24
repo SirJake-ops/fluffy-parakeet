@@ -9,16 +9,40 @@ set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --coverage")
 
 include_directories(include)
 
-file(GLOB SOURCES src/*.cpp)
-file(GLOB HEADERS include/*.h)
+
+add_library(pricing
+        src/pricing/MarketPrice.cpp
+)
+
+#add_library(simulation
+#        src/simulation/MarketSimulator.h
+#)
+
+#add_library(orderbook
+#        src/orderbook/OrderBookSimulator.h
+#)
+
+add_library(events
+        src/events/event_bus.cpp
+)
+
+add_library(transport
+        src/transport/server.cpp
+)
+
+
+add_executable(market_data_service
+        apps/market_data_service/main.cpp
+)
+
+target_link_libraries(market_data_service
+        PRIVATE
+        pricing
+#        simulation
+#        orderbook
+        events
+        transport
+)
+
 
 add_subdirectory(test)
-
-add_executable(TradingExchange main.cpp ${SOURCES}
-        include/PriceGenerator.h
-        include/Configuration.h
-        include/MarkPrice.h
-        src/MarketPrice.cpp
-        include/MarketSimulator.h
-        include/OrderBookSimulator.h
-        include/Instrument.h)
